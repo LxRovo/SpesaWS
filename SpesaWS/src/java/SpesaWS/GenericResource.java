@@ -31,7 +31,7 @@ public class GenericResource extends Application {
 
     final private String driver = "com.mysql.jdbc.Driver";
     final private String dbms_url = "jdbc:mysql://localhost/";
-    final private String database = "test_database";
+    final private String database = "db_spesa";
     final private String user = "root";
     final private String password = "";
     private Connection spesaDatabase;
