@@ -1,4 +1,4 @@
-package SpesaWS;
+package spesa;
 
 /*
  * To change this license header, choose License Headers in Project Properties.

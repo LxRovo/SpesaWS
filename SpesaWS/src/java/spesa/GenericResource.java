@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package SpesaWS;
+package spesa;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -75,7 +75,7 @@ public class GenericResource extends Application {
         try {
             String sql = "SELECT Costo,Nome,Marca FROM prodotto p, lista l WHERE p.idProdotto = l.rifProdotto AND ";
             if (!id.isEmpty()) {
-                sql = sql + " l.idLista='" + id + "'";
+                sql = sql + " l.rifRichiesta='" + id + "'";
             }
 
             Statement statement = spesaDatabase.createStatement();
