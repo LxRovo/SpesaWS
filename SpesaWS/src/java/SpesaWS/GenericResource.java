@@ -64,7 +64,7 @@ public class GenericResource extends Application {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path("getLista")
-    public String getLista(@QueryParam("idLista") String id) {
+    public String getLista(@QueryParam("rifRichiesta") String id) {
 
         init();
         String output = "";
@@ -75,7 +75,7 @@ public class GenericResource extends Application {
         try {
             String sql = "SELECT Costo,Nome,Marca FROM prodotto p, lista l WHERE p.idProdotto = l.rifProdotto AND ";
             if (!id.isEmpty()) {
-                sql = sql + " l.idLista='" + id;
+                sql = sql + " l.idLista='" + id + "'";
             }
 
             Statement statement = spesaDatabase.createStatement();
@@ -110,17 +110,16 @@ public class GenericResource extends Application {
                     output += "</costo>\n";
                     output += "<nome>";
                     output += p.getNome();
-                    output += "</nome>";
-                    output += "</number>\n";
+                    output += "</nome>\n";
                     output += "<marca>";
                     output += p.getMarca();
-                    output += "</marca>";
-                    output += "</number>\n";
+                    output += "</marca>\n";
                     output += "</prodotto>\n";
                 }
 
                 output += "</listaSpesa>\n";
             } else {
+                
                 destroy();
                 return "<errorMessage>404</errorMessage>";
 
