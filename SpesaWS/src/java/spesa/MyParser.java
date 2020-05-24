@@ -30,7 +30,7 @@ public class MyParser {
         liste = new ArrayList();
     }
 
-    public List parseDocument(String filename) throws ParserConfigurationException, SAXException, IOException {
+    public List parseDocument(String filename, String method) throws ParserConfigurationException, SAXException, IOException {
         DocumentBuilderFactory factory;
         DocumentBuilder builder;
         Document document;
@@ -49,7 +49,7 @@ public class MyParser {
             for (int i = 0; i < nodelist.getLength(); i++) {
                 // solo la prima table contiene cio che mi interessa
                 element = (Element) nodelist.item(i);
-                lista = getLista(element);
+                lista = getLista(element, method);
                 liste.add(lista);
             }
         }
@@ -67,18 +67,28 @@ public class MyParser {
         return nodelist;
     }
 
-    private Lista getLista(Element element1) {
+    private Lista getLista(Element element1, String method) {
         Lista lista = null;
         try {
             int rifRichiesta = MyLibXML.getIntValue(element1, "rifRichiesta");
             int rifProdotto = MyLibXML.getIntValue(element1, "rifProdotto");
             int quantita = MyLibXML.getIntValue(element1, "quantita");
 
-            lista = new Lista(rifRichiesta, rifProdotto, quantita);
+            if (method.equals("post")) {
 
+                lista = new Lista(rifRichiesta, rifProdotto, quantita);
+            
+            }else if (method.equals("put")) {
+
+                int idLista = MyLibXML.getIntValue(element1, "idLista");
+                lista = new Lista(idLista, rifRichiesta, rifProdotto, quantita);
+            }
+            
+            
+            
 
         } catch (Exception ex) {
-            
+
         }
         return lista;
 

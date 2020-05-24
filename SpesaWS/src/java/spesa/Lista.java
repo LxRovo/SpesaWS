@@ -11,9 +11,18 @@ package spesa;
  */
 public class Lista {
     
-    private int rifRichiesta, rifProdotto, quantita;
+    private int rifRichiesta, rifProdotto, quantita, idLista;
 
-    public Lista(int rifRichiesta, int rifProdotto, int quantita) {
+       public Lista(int rifRichiesta, int rifProdotto, int quantita) {
+        
+        this.rifRichiesta = rifRichiesta;
+        this.rifProdotto = rifProdotto;
+        this.quantita = quantita;
+    }
+    
+    public Lista(int idLista, int rifRichiesta, int rifProdotto, int quantita) {
+        
+        this.idLista = idLista;
         this.rifRichiesta = rifRichiesta;
         this.rifProdotto = rifProdotto;
         this.quantita = quantita;
@@ -29,6 +38,10 @@ public class Lista {
 
     public int getQuantita() {
         return quantita;
+    }
+
+    public int getIdLista() {
+        return idLista;
     }
     
     

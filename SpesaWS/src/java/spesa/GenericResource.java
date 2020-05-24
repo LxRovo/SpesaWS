@@ -145,7 +145,7 @@ public class GenericResource extends Application {
             writer.flush();
             writer.close();
 
-            ArrayList<Lista> liste = (ArrayList<Lista>) myParse.parseDocument("lista.xml");
+            ArrayList<Lista> liste = (ArrayList<Lista>) myParse.parseDocument("lista.xml", "post");
             if (!connected) {
                 return "<errorMessage>400</errorMessage>";
             }
@@ -176,6 +176,50 @@ public class GenericResource extends Application {
         return "<errorMessage>400</errorMessage>";
     }
     
-    //updLista
+    @PUT
+    @Consumes(MediaType.TEXT_XML)
+    @Path("updLista")
+    public String putProdotto(String content) {
+        try {
+            init();
+
+            MyParser myParse = new MyParser();
+            BufferedWriter writer;
+            writer = new BufferedWriter(new FileWriter("updLista.xml"));
+            writer.write(content);
+            writer.flush();
+            writer.close();
+
+             ArrayList<Lista> lista = (ArrayList<Lista>) myParse.parseDocument("updLista.xml", "put");
+            if (!connected) {
+                return "<errorMessage>400</errorMessage>";
+            }
+
+            try {
+                String sql = "UPDATE lista SET rifRichiesta='" + lista.get(0).getRifRichiesta() + "', rifProdotto='" + lista.get(0).getRifProdotto() + "', quantita='" + lista.get(0).getQuantita() + "' WHERE idLista='" + lista.get(0).getIdLista() + "'";
+                Statement statement = spesaDatabase.createStatement();
+
+                if (statement.executeUpdate(sql) <= 0) {
+                    statement.close();
+                    return "<errorMessage>403</errorMessage>";
+                }
+
+                statement.close();
+                destroy();
+                return "<message>Update effettuato</message>";
+            } catch (SQLException ex) {
+                destroy();
+                return "<errorMessage>500</errorMessage>";
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(GenericResource.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParserConfigurationException ex) {
+            Logger.getLogger(GenericResource.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SAXException ex) {
+            Logger.getLogger(GenericResource.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "<errorMessage>400</errorMessage>";
+    }
+   
 
 }
