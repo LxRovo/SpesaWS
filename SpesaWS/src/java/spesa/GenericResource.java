@@ -5,19 +5,17 @@
  */
 package spesa;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.sql.*;
 import java.util.ArrayList;
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.Produces;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MediaType;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.ws.rs.core.*;
+import javax.ws.rs.*;
+import javax.xml.parsers.ParserConfigurationException;
+import org.xml.sax.SAXException;
 
 /**
  * REST Web Service
@@ -132,5 +130,52 @@ public class GenericResource extends Application {
         destroy();
         return output;
     }
+    
+    @POST
+    @Consumes(MediaType.TEXT_XML)
+    @Path("lista")
+    public String postProdotto(String content) {
+        try {
+            init();
+
+            MyParser myParse = new MyParser();
+            BufferedWriter writer;
+            writer = new BufferedWriter(new FileWriter("lista.xml"));
+            writer.write(content);
+            writer.flush();
+            writer.close();
+
+            ArrayList<Lista> liste = (ArrayList<Lista>) myParse.parseDocument("lista.xml");
+            if (!connected) {
+                return "<errorMessage>400</errorMessage>";
+            }
+
+            try {
+                String sql = "INSERT INTO lista (rifRichiesta, rifProdotto, quantita) VALUES ('" + liste.get(0).getRifRichiesta()+ "','" + liste.get(0).getRifProdotto() + "','" + liste.get(0).getQuantita()+ "')";
+                Statement statement = spesaDatabase.createStatement();
+
+                if (statement.executeUpdate(sql) <= 0) {
+                    statement.close();
+                    return "<errorMessage>403</errorMessage>";
+                }
+
+                statement.close();
+                destroy();
+                return "<message>Inserimento effettuato</message>";
+            } catch (SQLException ex) {
+                destroy();
+                return "<errorMessage>500</errorMessage>";
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(GenericResource.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParserConfigurationException ex) {
+            Logger.getLogger(GenericResource.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SAXException ex) {
+            Logger.getLogger(GenericResource.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "<errorMessage>400</errorMessage>";
+    }
+    
+    //updLista
 
 }
